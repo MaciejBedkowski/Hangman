@@ -8,13 +8,20 @@ import SecredPassword
 import Instruction
 from os import system
 import WinGame
+import Menu
+import Category
+import Champions
+import SaveChampions
+import Options
 
 #Zmienne
-passwords = []          #Zmienna listy przechowywująca hasła do gry
+passwords = []          #Zmienna listy przechowywująca hasła do gry   
+pkt = 2000              #Zmienna przechowywująca ilość pkt do uzyskania
 ABC = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','R','S','T','U','W','V','X','Y','Z']
 #Zmienna przechowująca alfabet do walidacji wprowadzonych liter
 wordGame = ""           #Zmienna przetrzymująca hasło do gry
-choice = None           #Zmienna przechowująca wybur gracza odnoszący się do gry
+choiceCategory = None   #Zmienna przechowywująca wybór kategorii
+choice = None           #Zmienna przechowująca wybór gracza odnoszący się do gry
 choiceInGame = None     #Zbiemma wyboru wewnątrz gry
 letterToCheck = ""      #Zmienna wprowadzanej litery do sprawdzenia
 letters = []            #Lista przechowująca wybrane litery
@@ -22,17 +29,14 @@ wrongDecision = 0       #Zmienna przechowywująca ilość błędnych decyzji
 secretPassword =""      #Zmienna przechowująca zakryte hasło do odgadnięcia
 checkPassword =""       #Zmienna do wprowadzania zgadywania hasła
 tmpPassword =""         #Zmienna do tymczasowego przypisywania hasła
+playerName = ""         #Zmienna przechowująca imie gracza
 
 #INTRO
 Intro.viewIntro()
 
 #Opcje gry
 while True:
-    print("**********************************")
-    print("*Naciśnij 1 aby poznać zasady gry*")
-    print("*Naciśnij 2 aby przejść do gry   *")
-    print("*Naciśnij 0 aby wyjść z gry      *")
-    print("**********************************")
+    Menu.Menu()
 #Walidator opcji wprowadzanej przez użytkownika
     try:
         choice = int(input("Naciśnij klawisz:"))
@@ -42,11 +46,25 @@ while True:
 #Sprawdzanie wyboru użytkownika       
     if choice == 0:
         break
+
     elif choice == 1:
         Instruction.Instruction()
+
+    elif choice == 3:
+        Champions.schowTop10()
+
     elif choice == 2:
+        playerName = input("Podaj imię:")
+
+        #Wybór kategorii
+        Category.Category()
+        try:
+            choiceCategory = int(input("Wybierz kategorię hasła:"))
+        except ValueError:
+            choiceCategory = 5   
+        
         #Zaciągnięcie haseł do gry
-        Passwords.GetPasswords(passwords)
+        passwords = Passwords.GetPasswords(passwords,choiceCategory)
 
         #Losowanie hasła do gry
         wordGame = RandomPasswordGame(passwords,wordGame)
@@ -68,14 +86,15 @@ while True:
                 print("Podane już litery:")
                 for a in letters: print(a, end=',')
 
-                print("\nWybierz opcję:")
-                print("1-Podaję literę do hasła")
-                print("2-Zgdauję hasło")
+                print(f"Twoje pkt:{pkt}")
+
+                Options.Options()
                 #Walidator opcji wprowadzanej przez użytkownika
                 try:
                     choiceInGame = int(input("Naciśnij klawisz:"))
                 except ValueError:
                     choice = 0
+
                 if choiceInGame == 1:
                     letterToCheck = input("Wprowadź literę:")
                     #Walidacja do wprowadzonej wartości
@@ -103,28 +122,45 @@ while True:
 
                                 #Zresetowanie tymczasowego hasła
                                 tmpPassword = ""
+                                pkt += 100
 
                                 #Wygrana!
                                 if WinGame.WinGame(wordGame,secretPassword):
+                                    #Resetowanie wartości
+                                    system('cls')
+                                    letters = []
+                                    wrongDecision = 0
+                                    SaveChampions.SaveChampions(pkt,playerName)
+                                    Champions.schowTop10()
                                     break
                             else:
                                 print("PODAŁEŚ NIEPRAWIDŁOWĄ LITERĘ!")
                                 wrongDecision += 1
+                                pkt -= 400
                     else:
                         print("Wprowadziłeś nieprawidłowy znak")
                         continue
                 elif choiceInGame == 2:
-                    checkPassword = input("Podaj słowo, które kryje się za hasłem")
+                    checkPassword = input("Podaj słowo, które kryje się za hasłem").upper()
 
                     #Wygrana!
-                    if WinGame.WinGame(wordGame,secretPassword):
+                    if WinGame.WinGame(wordGame,checkPassword):
+                        #Resetowanie wartości
+                        system('cls')
+                        letters = []
+                        wrongDecision = 0
+                        pkt += 500
+                        SaveChampions.SaveChampions(pkt,playerName)
+                        Champions.schowTop10()
                         break
                     else:
                         print("PODAŁEŚ NIEPRAWIDŁOWE HASŁO!")
                         wrongDecision += 1
+                        pkt -= 500
 
             #Koniec gry
             else:
+                system('cls')
                 Gallows.Gallows(wrongDecision)
                 print("OOOOO GAME OVER!!! OOOOO")
                 #Resetowanie wartości
