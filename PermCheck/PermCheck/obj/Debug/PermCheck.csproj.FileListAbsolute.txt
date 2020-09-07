@@ -1,0 +1,6 @@
+C:\Users\Maciej Bedkowski\Desktop\PermCheck\PermCheck\bin\Debug\PermCheck.exe.config
+C:\Users\Maciej Bedkowski\Desktop\PermCheck\PermCheck\bin\Debug\PermCheck.exe
+C:\Users\Maciej Bedkowski\Desktop\PermCheck\PermCheck\bin\Debug\PermCheck.pdb
+C:\Users\Maciej Bedkowski\Desktop\PermCheck\PermCheck\obj\Debug\PermCheck.csprojAssemblyReference.cache
+C:\Users\Maciej Bedkowski\Desktop\PermCheck\PermCheck\obj\Debug\PermCheck.exe
+C:\Users\Maciej Bedkowski\Desktop\PermCheck\PermCheck\obj\Debug\PermCheck.pdb
